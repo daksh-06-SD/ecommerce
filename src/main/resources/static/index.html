@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Store | Home</title>
+    <!-- Tailwind CSS for Modern Design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between">
+
+<!-- Sticky Navigation Bar -->
+<nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center gap-2 text-2xl font-extrabold text-indigo-600 hover:opacity-90 transition">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span>E-Shop</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="flex items-center gap-6 font-medium text-gray-600">
+                <a href="index.html" class="text-indigo-600 font-semibold"><i class="fa-solid fa-house mr-1"></i> Home</a>
+                <a href="products.html" class="hover:text-indigo-600 transition"><i class="fa-solid fa-box-open mr-1"></i> Products</a>
+                <a href="cart.html" class="hover:text-indigo-600 transition flex items-center gap-1">
+                    <i class="fa-solid fa-cart-shopping"></i> Cart
+                </a>
+                <a href="login.html" class="hover:text-indigo-600 transition"><i class="fa-solid fa-right-to-bracket mr-1"></i> Login</a>
+                <a href="register.html" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition shadow-sm">Register</a>
+            </div>
+
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="relative bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white py-20 px-6">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
+        <div class="space-y-6 md:w-1/2 text-center md:text-left">
+                <span class="inline-block bg-indigo-500/30 text-indigo-200 text-sm font-semibold px-3 py-1 rounded-full border border-indigo-400/30">
+                    <i class="fa-solid fa-bolt mr-1"></i> New Season Arrivals
+                </span>
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-tight">
+                Upgrade Your Style & Gadgets Today.
+            </h1>
+            <p class="text-indigo-200 text-lg">
+                Discover premium products at the best prices with instant delivery and guaranteed quality.
+            </p>
+            <div class="flex flex-wrap gap-4 justify-center md:justify-start pt-2">
+                <a href="products.html" class="bg-indigo-500 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-indigo-600 transition shadow-lg hover:shadow-indigo-500/50 flex items-center gap-2">
+                    <span>Shop Now</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Visual Card Element -->
+        <div class="md:w-1/2 flex justify-center">
+            <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20 shadow-2xl text-center max-w-sm">
+                <div class="w-24 h-24 bg-indigo-600/30 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl text-indigo-300">
+                    <i class="fa-solid fa-gem"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Premium Quality</h3>
+                <p class="text-sm text-indigo-200">Handpicked collections carefully tested for your needs.</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Features Badges Section -->
+<section class="py-12 bg-white border-b">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
+
+        <div class="p-4 rounded-xl hover:bg-slate-50 transition">
+            <div class="text-indigo-600 text-3xl mb-2"><i class="fa-solid fa-truck-fast"></i></div>
+            <h4 class="font-bold text-gray-900">Fast Shipping</h4>
+            <p class="text-sm text-gray-500">Free delivery on all orders</p>
+        </div>
+
+        <div class="p-4 rounded-xl hover:bg-slate-50 transition">
+            <div class="text-indigo-600 text-3xl mb-2"><i class="fa-solid fa-shield-halved"></i></div>
+            <h4 class="font-bold text-gray-900">Secure Payment</h4>
+            <p class="text-sm text-gray-500">100% encrypted checkout</p>
+        </div>
+
+        <div class="p-4 rounded-xl hover:bg-slate-50 transition">
+            <div class="text-indigo-600 text-3xl mb-2"><i class="fa-solid fa-rotate-left"></i></div>
+            <h4 class="font-bold text-gray-900">Easy Returns</h4>
+            <p class="text-sm text-gray-500">30-day money-back policy</p>
+        </div>
+
+        <div class="p-4 rounded-xl hover:bg-slate-50 transition">
+            <div class="text-indigo-600 text-3xl mb-2"><i class="fa-solid fa-headset"></i></div>
+            <h4 class="font-bold text-gray-900">24/7 Support</h4>
+            <p class="text-sm text-gray-500">Dedicated customer help</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-400 py-8 text-center text-sm border-t border-gray-800">
+    <p>© 2026 E-Shop Store. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>

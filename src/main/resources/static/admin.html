@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - E-Commerce</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav>
+    <h2>E-Commerce Admin</h2>
+
+    <div>
+        <a href="admin.html">Dashboard</a>
+        <button onclick="logout()">Logout</button>
+    </div>
+</nav>
+
+<div class="form-container">
+
+    <h1>Admin Dashboard</h1>
+
+    <p id="message"></p>
+
+
+    <!-- ================= PRODUCTS ================= -->
+
+    <h2>Product Management</h2>
+
+    <h3>Add New Product</h3>
+
+    <form id="productForm">
+
+        <input
+                type="text"
+                id="productName"
+                placeholder="Product Name"
+                required
+        >
+
+        <input
+                type="text"
+                id="productDescription"
+                placeholder="Product Description"
+                required
+        >
+
+        <input
+                type="number"
+                id="productPrice"
+                placeholder="Price"
+                required
+        >
+
+        <input
+                type="number"
+                id="productQuantity"
+                placeholder="Quantity"
+                required
+        >
+
+        <input
+                type="text"
+                id="productCategory"
+                placeholder="Category"
+                required
+        >
+
+        <button type="submit">
+            Add Product
+        </button>
+
+    </form>
+
+
+    <h3>Existing Products</h3>
+
+    <div id="products">
+        Loading products...
+    </div>
+
+
+    <!-- ================= ORDERS ================= -->
+
+    <h2>All Orders</h2>
+
+    <div id="orders">
+        Loading orders...
+    </div>
+
+
+    <!-- ================= CUSTOMERS ================= -->
+
+    <h2>All Customers</h2>
+
+    <div id="customers">
+        Loading customers...
+    </div>
+
+</div>
+
+
+<script>
+
+    const user =
+        JSON.parse(localStorage.getItem("user"));
+
+    const token =
+        localStorage.getItem("token");
+
+
+    // ================= LOGIN CHECK =================
+
+    if (!user || !token) {
+
+        window.location.href =
+            "login.html";
+    }
+
+
+    // ================= ADMIN CHECK =================
+
+    if (user.role !== "ADMIN") {
+
+        alert(
+            "Access denied. Admin only."
+        );
+
+        window.location.href =
+            "dashboard.html";
+    }
+
+
+    // ================= API FUNCTION =================
+
+    async function apiFetch(
+        url,
+        options = {}
+    ) {
+
+        options.headers = {
+
+            ...(options.headers || {}),
+
+            "Authorization":
+                "Bearer " + token,
+
+            "Content-Type":
+                "application/json"
+        };
+
+        return fetch(
+            url,
+            options
+        );
+    }
+
+
+
+    // ================= ADD PRODUCT =================
+
+    document
+        .getElementById("productForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const product = {
+
+                    name:
+                        document
+                        .getElementById(
+                            "productName"
+                        )
+                        .value,
+
+                    description:
+                        document
+                        .getElementById(
+                            "productDescription"
+                        )
+                        .value,
+
+                    price:
+                        Number(
+                            document
+                            .getElementById(
+                                "productPrice"
+                            )
+                            .value
+                        ),
+
+                    quantity:
+                        Number(
+                            document
+                            .getElementById(
+                                "productQuantity"
+                            )
+                            .value
+                        ),
+
+                    category:
+                        document
+                        .getElementById(
+                            "productCategory"
+                        )
+                        .value
+                };
+
+
+                try {
+
+                    const response =
+                        await apiFetch(
+                            "/api/products/admin",
+                            {
+                                method: "POST",
+
+                                body:
+                                    JSON.stringify(
+                                        product
+                                    )
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        alert(
+                            "Unable to add product."
+                        );
+
+                        return;
+                    }
+
+
+                    alert(
+                        "Product added successfully!"
+                    );
+
+
+                    document
+                        .getElementById(
+                            "productForm"
+                        )
+                        .reset();
+
+
+                    loadProducts();
+
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    alert(
+                        "Server error."
+                    );
+                }
+
+            }
+        );
+
+
+
+    // ================= LOAD PRODUCTS =================
+
+    async function loadProducts() {
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/api/products"
+                );
+
+
+            if (!response.ok) {
+
+                document
+                    .getElementById(
+                        "products"
+                    )
+                    .innerText =
+                    "Unable to load products.";
+
+                return;
+            }
+
+
+            const products =
+                await response.json();
+
+
+            const container =
+                document.getElementById(
+                    "products"
+                );
+
+
+            container.innerHTML = "";
+
+
+            if (products.length === 0) {
+
+                container.innerHTML =
+                    "<p>No products found.</p>";
+
+                return;
+            }
+
+
+            products.forEach(product => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    "cart-item";
+
+
+                div.innerHTML = `
+
+                    <h3>
+                        ${product.name}
+                    </h3>
+
+                    <p>
+                        Product ID:
+                        ${product.id}
+                    </p>
+
+                    <p>
+                        Description:
+                        ${product.description}
+                    </p>
+
+                    <p>
+                        Price:
+                        ₹${product.price}
+                    </p>
+
+                    <p>
+                        Quantity:
+                        ${product.quantity}
+                    </p>
+
+                    <p>
+                        Category:
+                        ${product.category}
+                    </p>
+
+
+                    <button
+                        onclick="editProduct(
+                            ${product.id}
+                        )">
+
+                        Edit
+
+                    </button>
+
+
+                    <button
+                        onclick="deleteProduct(
+                            ${product.id}
+                        )">
+
+                        Delete
+
+                    </button>
+
+                    <hr>
+
+                `;
+
+
+                container.appendChild(
+                    div
+                );
+
+            });
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            document
+                .getElementById(
+                    "products"
+                )
+                .innerText =
+                "Server error.";
+        }
+    }
+
+
+
+    // ================= EDIT PRODUCT =================
+
+    async function editProduct(productId) {
+
+        const name =
+            prompt(
+                "Enter new product name:"
+            );
+
+
+        if (name === null) {
+            return;
+        }
+
+
+        const description =
+            prompt(
+                "Enter new description:"
+            );
+
+
+        if (description === null) {
+            return;
+        }
+
+
+        const price =
+            prompt(
+                "Enter new price:"
+            );
+
+
+        if (price === null) {
+            return;
+        }
+
+
+        const quantity =
+            prompt(
+                "Enter new quantity:"
+            );
+
+
+        if (quantity === null) {
+            return;
+        }
+
+
+        const category =
+            prompt(
+                "Enter new category:"
+            );
+
+
+        if (category === null) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await apiFetch(
+                    `/api/products/${productId}`,
+                    {
+
+                        method: "PUT",
+
+                        body:
+                            JSON.stringify({
+
+                                name: name,
+
+                                description:
+                                    description,
+
+                                price:
+                                    Number(
+                                        price
+                                    ),
+
+                                quantity:
+                                    Number(
+                                        quantity
+                                    ),
+
+                                category:
+                                    category
+
+                            })
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                alert(
+                    "Unable to update product."
+                );
+
+                return;
+            }
+
+
+            alert(
+                "Product updated successfully!"
+            );
+
+
+            loadProducts();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Server error."
+            );
+        }
+    }
+
+
+
+    // ================= DELETE PRODUCT =================
+
+    async function deleteProduct(
+        productId
+    ) {
+
+        const confirmDelete =
+            confirm(
+                "Are you sure you want to delete this product?"
+            );
+
+
+        if (!confirmDelete) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await apiFetch(
+                    `/api/products/${productId}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                alert(
+                    "Unable to delete product."
+                );
+
+                return;
+            }
+
+
+            alert(
+                "Product deleted successfully!"
+            );
+
+
+            loadProducts();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Server error."
+            );
+        }
+    }
+
+
+
+    // ================= LOAD ORDERS =================
+
+    async function loadOrders() {
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/api/orders/admin/all"
+                );
+
+
+            if (!response.ok) {
+
+                document
+                    .getElementById(
+                        "orders"
+                    )
+                    .innerText =
+                    "Unable to load orders.";
+
+                return;
+            }
+
+
+            const orders =
+                await response.json();
+
+
+            const container =
+                document.getElementById(
+                    "orders"
+                );
+
+
+            container.innerHTML = "";
+
+
+            if (orders.length === 0) {
+
+                container.innerHTML =
+                    "<p>No orders found.</p>";
+
+                return;
+            }
+
+
+            orders.forEach(order => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    "cart-item";
+
+
+                div.innerHTML = `
+
+                    <h3>
+                        Order #${order.id}
+                    </h3>
+
+                    <p>
+                        User ID:
+                        ${order.userId}
+                    </p>
+
+                    <p>
+                        Total:
+                        ₹${order.totalAmount}
+                    </p>
+
+                    <p>
+                        Payment:
+                        ${order.paymentMethod}
+                    </p>
+
+                    <p>
+                        Address:
+                        ${order.address}
+                    </p>
+
+                    <p>
+                        Current Status:
+                        <strong>
+                            ${order.status}
+                        </strong>
+                    </p>
+
+
+                    <select
+                        id="status-${order.id}"
+                    >
+
+                        <option value="PLACED">
+                            PLACED
+                        </option>
+
+                        <option value="PROCESSING">
+                            PROCESSING
+                        </option>
+
+                        <option value="SHIPPED">
+                            SHIPPED
+                        </option>
+
+                        <option value="DELIVERED">
+                            DELIVERED
+                        </option>
+
+                        <option value="CANCELLED">
+                            CANCELLED
+                        </option>
+
+                    </select>
+
+
+                    <button
+                        onclick="updateStatus(
+                            ${order.id}
+                        )">
+
+                        Update Status
+
+                    </button>
+
+                    <hr>
+
+                `;
+
+
+                container.appendChild(
+                    div
+                );
+
+            });
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            document
+                .getElementById(
+                    "orders"
+                )
+                .innerText =
+                "Server error.";
+        }
+    }
+
+
+
+    // ================= UPDATE ORDER =================
+
+    async function updateStatus(
+        orderId
+    ) {
+
+        const status =
+            document
+                .getElementById(
+                    "status-" + orderId
+                )
+                .value;
+
+
+        try {
+
+            const response =
+                await apiFetch(
+                    `/api/orders/admin/${orderId}/status?status=${status}`,
+                    {
+                        method: "PUT"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                alert(
+                    "Unable to update order status."
+                );
+
+                return;
+            }
+
+
+            alert(
+                "Order status updated."
+            );
+
+
+            loadOrders();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Server error."
+            );
+        }
+    }
+
+
+
+    // ================= LOAD CUSTOMERS =================
+
+    async function loadCustomers() {
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/api/users/customers"
+                );
+
+
+            if (!response.ok) {
+
+                document
+                    .getElementById(
+                        "customers"
+                    )
+                    .innerText =
+                    "Unable to load customers.";
+
+                return;
+            }
+
+
+            const customers =
+                await response.json();
+
+
+            const container =
+                document.getElementById(
+                    "customers"
+                );
+
+
+            container.innerHTML = "";
+
+
+            if (customers.length === 0) {
+
+                container.innerHTML =
+                    "<p>No customers found.</p>";
+
+                return;
+            }
+
+
+            customers.forEach(customer => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    "cart-item";
+
+
+                div.innerHTML = `
+
+                    <h3>
+                        ${customer.name}
+                    </h3>
+
+                    <p>
+                        Customer ID:
+                        ${customer.id}
+                    </p>
+
+                    <p>
+                        Email:
+                        ${customer.email}
+                    </p>
+
+                    <p>
+                        Phone:
+                        ${customer.phone ||
+                        "Not provided"}
+                    </p>
+
+                    <p>
+                        Address:
+                        ${customer.address ||
+                        "Not provided"}
+                    </p>
+
+                    <p>
+                        Role:
+                        ${customer.role}
+                    </p>
+
+                    <hr>
+
+                `;
+
+
+                container.appendChild(
+                    div
+                );
+
+            });
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            document
+                .getElementById(
+                    "customers"
+                )
+                .innerText =
+                "Server error.";
+        }
+    }
+
+
+
+    // ================= LOGOUT =================
+
+    function logout() {
+
+        localStorage.removeItem(
+            "token"
+        );
+
+        localStorage.removeItem(
+            "user"
+        );
+
+        window.location.href =
+            "login.html";
+    }
+
+
+
+    // ================= START =================
+
+    loadProducts();
+
+    loadOrders();
+
+    loadCustomers();
+
+</script>
+
+</body>
+</html>

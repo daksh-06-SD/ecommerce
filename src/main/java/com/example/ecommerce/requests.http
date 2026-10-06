@@ -1,0 +1,23 @@
+POST http://localhost:8080/api/users/register
+Content-Type: application/json
+
+{
+  "name": "Daksh",
+  "email": "daksh@gmail.com",
+  "password": "123456",
+  "phone": "9876543210",
+  "address": "Noida"
+}
+### Create Product
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+  "name": "Laptop",
+  "description": "HP Laptop",
+  "price": 55000,
+  "quantity": 10,
+  "category": "Electronics"
+}
+### Get All Products
+GET http://localhost:8080/api/products

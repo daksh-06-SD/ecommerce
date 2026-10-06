@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Store | Products</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between">
+
+<!-- Navbar -->
+<nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <a href="index.html" class="flex items-center gap-2 text-2xl font-extrabold text-indigo-600">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span>E-Shop</span>
+            </a>
+            <div class="flex items-center gap-6 font-medium text-gray-600">
+                <a href="index.html" class="hover:text-indigo-600 transition"><i class="fa-solid fa-house mr-1"></i> Home</a>
+                <a href="products.html" class="text-indigo-600 font-semibold"><i class="fa-solid fa-box-open mr-1"></i> Products</a>
+                <a href="cart.html" class="hover:text-indigo-600 transition flex items-center gap-1">
+                    <i class="fa-solid fa-cart-shopping"></i> Cart
+                </a>
+                <a href="orders.html" class="hover:text-indigo-600 transition"><i class="fa-solid fa-receipt mr-1"></i> Orders</a>
+                <button onclick="logout()" class="text-red-500 hover:text-red-700 transition"><i class="fa-solid fa-right-from-bracket mr-1"></i> Logout</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Container -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
+
+    <!-- Header & Filter Bar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900">Explore Products</h1>
+            <p class="text-gray-500 text-sm mt-1">Find the best products curated just for you</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <div class="relative w-full md:w-64">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="Search products..."
+                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white text-sm">
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Banner -->
+    <div id="toast" class="hidden fixed bottom-5 right-5 bg-indigo-600 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50">
+        <i class="fa-solid fa-circle-check text-xl"></i>
+        <span id="toastMsg">Product added to cart!</span>
+    </div>
+
+    <!-- Products Grid Container -->
+    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Dynamic products will be rendered here -->
+        <div class="col-span-full text-center py-12 text-gray-400">
+            <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i>
+            <p>Loading catalog...</p>
+        </div>
+    </div>
+
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-400 py-6 text-center text-sm border-t border-gray-800">
+    <p>© 2026 E-Shop Store. All Rights Reserved.</p>
+</footer>
+
+<!-- Backend API Integration -->
+<script>
+    let allProducts = [];
+
+    async function fetchProducts() {
+        try {
+            const response = await fetch('http://localhost:8080/api/products');
+            if(response.ok) {
+                allProducts = await response.json();
+                renderProducts(allProducts);
+            } else {
+                document.getElementById('productGrid').innerHTML = `
+                    <div class="col-span-full text-center py-12 text-red-500 font-semibold">
+                        Failed to load products from server.
+                    </div>`;
+            }
+        } catch (error) {
+            document.getElementById('productGrid').innerHTML = `
+                <div class="col-span-full text-center py-12 text-red-500 font-semibold">
+                    Unable to connect to backend backend server.
+                </div>`;
+        }
+    }
+
+    function renderProducts(products) {
+        const container = document.getElementById('productGrid');
+        if(products.length === 0) {
+            container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-500">No products found.</div>`;
+            return;
+        }
+
+        container.innerHTML = products.map(product => `
+            <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-200 flex flex-col justify-between overflow-hidden group">
+
+                <div>
+                    <!-- Product Image Container -->
+                    <div class="h-48 bg-slate-100 relative overflow-hidden flex items-center justify-center p-4">
+                        <img src="${product.imageUrl || 'https://via.placeholder.com/200'}" alt="${product.name}"
+                            class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+
+                        <span class="absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full ${product.stockQuantity > 0 ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-red-100 text-red-800 border border-red-200'}">
+                            ${product.stockQuantity > 0 ? `In Stock (${product.stockQuantity})` : 'Out of Stock'}
+                        </span>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="p-5">
+                        <div class="flex items-center gap-1 text-amber-400 text-xs mb-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-stroke"></i>
+                            <span class="text-gray-400 ml-1 font-medium">(4.5)</span>
+                        </div>
+
+                        <h3 class="font-bold text-gray-900 text-lg mb-1 truncate">${product.name}</h3>
+                        <p class="text-gray-500 text-xs line-clamp-2 mb-4">${product.description || 'No description available for this item.'}</p>
+                    </div>
+                </div>
+
+                <!-- Bottom Price & Action Button -->
+                <div class="p-5 pt-0 flex items-center justify-between border-t border-slate-100 mt-auto">
+                    <div>
+                        <span class="text-xs text-gray-400 block font-medium">Price</span>
+                        <span class="text-xl font-extrabold text-indigo-600">₹${product.price}</span>
+                    </div>
+
+                    <button onclick="addToCart(${product.id})" ${product.stockQuantity <= 0 ? 'disabled' : ''}
+                        class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-sm shadow-md hover:shadow-indigo-500/30">
+                        <i class="fa-solid fa-cart-plus"></i>
+                        <span>Add</span>
+                    </button>
+                </div>
+
+            </div>
+        `).join('');
+    }
+
+    function filterProducts() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query));
+        renderProducts(filtered);
+    }
+
+    async function addToCart(productId) {
+        const token = localStorage.getItem('token');
+        if(!token) {
+            showToast("Please login first to add items!", true);
+            setTimeout(() => window.location.href = 'login.html', 1500);
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/cart/add?productId=${productId}&quantity=1`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if(response.ok) {
+                showToast("Product added to cart successfully!");
+            } else {
+                showToast("Failed to add product.", true);
+            }
+        } catch(e) {
+            showToast("Server error.", true);
+        }
+    }
+
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toastMsg');
+        toastMsg.innerText = msg;
+        toast.className = `fixed bottom-5 right-5 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50 transition duration-300 ${isError ? 'bg-red-600' : 'bg-indigo-600'}`;
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 2500);
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    }
+
+    // Initialize
+    fetchProducts();
+</script>
+</body>
+</html>

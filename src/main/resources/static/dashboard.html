@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - E-Commerce</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav>
+    <h2>E-Commerce</h2>
+
+    <div>
+        <a href="products.html">Products</a>
+        <a href="cart.html">Cart</a>
+        <a href="orders.html">My Orders</a>
+        <a href="#" onclick="logout()">Logout</a>
+
+        <button onclick="logout()">Logout</button>
+    </div>
+</nav>
+
+<div class="hero">
+
+    <h1 id="welcome">Welcome!</h1>
+
+    <p>Welcome to your e-commerce dashboard.</p>
+
+    <a href="products.html">
+        <button>Browse Products</button>
+    </a>
+
+</div>
+
+<script>
+
+    const token = localStorage.getItem("token");
+
+if (!token) {
+    window.location.href = "login.html";
+}
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user) {
+        window.location.href = "login.html";
+    } else {
+        document.getElementById("welcome").innerText =
+            "Welcome, " + user.name + "!";
+    }
+
+    function logout() {
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    window.location.href = "login.html";
+}
+
+</script>
+
+</body>
+</html>

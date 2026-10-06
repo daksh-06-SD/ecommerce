@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Store | Register</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-100 text-gray-800 font-sans min-h-screen flex flex-col justify-between">
+
+<!-- Navbar -->
+<nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <a href="index.html" class="flex items-center gap-2 text-2xl font-extrabold text-indigo-600">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span>E-Shop</span>
+            </a>
+            <div class="flex items-center gap-6 font-medium text-gray-600">
+                <a href="index.html" class="hover:text-indigo-600 transition"><i class="fa-solid fa-house mr-1"></i> Home</a>
+                <a href="login.html" class="hover:text-indigo-600 transition"><i class="fa-solid fa-right-to-bracket mr-1"></i> Login</a>
+                <a href="register.html" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition shadow-sm">Register</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Register Form Card -->
+<main class="flex-grow flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-lg w-full bg-white rounded-2xl shadow-xl p-8 border border-slate-200">
+
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
+            <h2 class="text-3xl font-extrabold text-gray-900">Create Account</h2>
+            <p class="text-sm text-gray-500 mt-1">Join us today for exclusive shopping experience</p>
+        </div>
+
+        <form id="registerForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" id="fullName" required placeholder="John Doe"
+                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition bg-slate-50 focus:bg-white">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-envelope"></i></span>
+                    <input type="email" id="email" required placeholder="john@example.com"
+                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition bg-slate-50 focus:bg-white">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-lock"></i></span>
+                    <input type="password" id="password" required placeholder="••••••••"
+                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition bg-slate-50 focus:bg-white">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Phone Number</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-phone"></i></span>
+                    <input type="tel" id="phoneNumber" required placeholder="9876543210"
+                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition bg-slate-50 focus:bg-white">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Delivery Address</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-location-dot"></i></span>
+                    <input type="text" id="address" required placeholder="Street address, City, Zip Code"
+                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition bg-slate-50 focus:bg-white">
+                </div>
+            </div>
+
+            <!-- Error / Status Message Banner -->
+            <div id="statusMessage" class="hidden text-sm p-3 rounded-lg text-center font-medium"></div>
+
+            <button type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition duration-200 shadow-md flex items-center justify-center gap-2">
+                <span>Register Now</span>
+                <i class="fa-solid fa-user-check"></i>
+            </button>
+        </form>
+
+        <div class="mt-5 text-center text-sm text-gray-600">
+            Already have an account?
+            <a href="login.html" class="text-indigo-600 font-bold hover:underline ml-1">Sign In</a>
+        </div>
+
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-400 py-6 text-center text-sm border-t border-gray-800">
+    <p>© 2026 E-Shop Store. All Rights Reserved.</p>
+</footer>
+
+<!-- Backend Integration Script -->
+<script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fullName = document.getElementById('fullName').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const phoneNumber = document.getElementById('phoneNumber').value;
+        const address = document.getElementById('address').value;
+        const statusMsg = document.getElementById('statusMessage');
+
+        try {
+            const response = await fetch('http://localhost:8080/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fullName, email, password, phoneNumber, address })
+            });
+
+            if (response.ok) {
+                statusMsg.className = "text-green-700 bg-green-100 p-3 rounded-lg text-center font-medium border border-green-200";
+                statusMsg.innerText = "Registration successful! Redirecting to login...";
+                statusMsg.classList.remove('hidden');
+
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            } else {
+                const data = await response.json();
+                statusMsg.className = "text-red-700 bg-red-100 p-3 rounded-lg text-center font-medium border border-red-200";
+                statusMsg.innerText = data.message || "Registration failed. Please check inputs.";
+                statusMsg.classList.remove('hidden');
+            }
+        } catch (error) {
+            statusMsg.className = "text-red-700 bg-red-100 p-3 rounded-lg text-center font-medium border border-red-200";
+            statusMsg.innerText = "Server error. Please try again later.";
+            statusMsg.classList.remove('hidden');
+        }
+    });
+</script>
+</body>
+</html>

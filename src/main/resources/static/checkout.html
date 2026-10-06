@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Store | Checkout</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between">
+
+<!-- Navbar -->
+<nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <a href="index.html" class="flex items-center gap-2 text-2xl font-extrabold text-indigo-600">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span>E-Shop</span>
+            </a>
+            <div class="flex items-center gap-6 font-medium text-gray-600">
+                <a href="index.html" class="hover:text-indigo-600 transition"><i class="fa-solid fa-house mr-1"></i> Home</a>
+                <a href="products.html" class="hover:text-indigo-600 transition"><i class="fa-solid fa-box-open mr-1"></i> Products</a>
+                <a href="cart.html" class="hover:text-indigo-600 transition flex items-center gap-1">
+                    <i class="fa-solid fa-cart-shopping"></i> Cart
+                </a>
+                <a href="orders.html" class="hover:text-indigo-600 transition"><i class="fa-solid fa-receipt mr-1"></i> Orders</a>
+                <button onclick="logout()" class="text-red-500 hover:text-red-700 transition"><i class="fa-solid fa-right-from-bracket mr-1"></i> Logout</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Container -->
+<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
+
+    <h1 class="text-3xl font-extrabold text-gray-900 mb-8 flex items-center gap-3">
+        <i class="fa-solid fa-shield-check text-indigo-600"></i> Checkout Order
+    </h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <!-- Delivery Address Form -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <h2 class="text-xl font-bold text-gray-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+                <i class="fa-solid fa-truck text-indigo-600"></i> Shipping Address
+            </h2>
+
+            <form id="checkoutForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+                    <input type="text" id="shippingName" required placeholder="John Doe"
+                           class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition bg-slate-50 focus:bg-white text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Phone Number</label>
+                    <input type="tel" id="shippingPhone" required placeholder="9876543210"
+                           class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition bg-slate-50 focus:bg-white text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Shipping Address</label>
+                    <textarea id="shippingAddress" rows="3" required placeholder="Flat No., Building Name, Street, City, Pincode"
+                              class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition bg-slate-50 focus:bg-white text-sm resize-none"></textarea>
+                </div>
+
+                <!-- Payment Option Badge -->
+                <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 flex items-center gap-3 text-indigo-800 text-sm">
+                    <i class="fa-solid fa-money-bill-wave text-lg text-indigo-600"></i>
+                    <span>Payment Method: <strong>Cash on Delivery (COD)</strong></span>
+                </div>
+
+                <button type="submit" id="placeOrderBtn"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition shadow-md flex items-center justify-center gap-2 mt-4">
+                    <span>Confirm & Place Order</span>
+                    <i class="fa-solid fa-check"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Order Confirmation Details -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 h-fit space-y-4">
+            <h2 class="text-xl font-bold text-gray-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+                <i class="fa-solid fa-file-invoice text-indigo-600"></i> Order Items
+            </h2>
+
+            <div id="checkoutSummary" class="space-y-3 divide-y divide-slate-100">
+                <div class="text-center py-6 text-gray-400">
+                    <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
+                </div>
+            </div>
+
+            <div id="statusMessage" class="hidden text-sm p-3 rounded-lg text-center font-medium"></div>
+        </div>
+
+    </div>
+
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-400 py-6 text-center text-sm border-t border-gray-800">
+    <p>© 2026 E-Shop Store. All Rights Reserved.</p>
+</footer>
+
+<!-- Backend Integration Script -->
+<script>
+    async function loadCheckoutSummary() {
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        if (user.fullName) document.getElementById('shippingName').value = user.fullName;
+        if (user.phoneNumber) document.getElementById('shippingPhone').value = user.phoneNumber;
+        if (user.address) document.getElementById('shippingAddress').value = user.address;
+
+        try {
+            const response = await fetch('http://localhost:8080/api/cart', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.ok) {
+                const cart = await response.json();
+                const items = cart.items || cart.cartItems || [];
+                const summaryContainer = document.getElementById('checkoutSummary');
+
+                if (items.length === 0) {
+                    alert("Cart is empty!");
+                    window.location.href = 'products.html';
+                    return;
+                }
+
+                let subtotal = 0;
+                let html = items.map(item => {
+                    const total = (item.product.price || 0) * item.quantity;
+                    subtotal += total;
+                    return `
+                        <div class="pt-2 flex justify-between items-center text-sm">
+                            <div>
+                                <p class="font-semibold text-gray-800">${item.product.name}</p>
+                                <p class="text-xs text-gray-400">Qty: ${item.quantity} x ₹${item.product.price}</p>
+                            </div>
+                            <span class="font-bold text-gray-900">₹${total}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                const tax = Math.round(subtotal * 0.18);
+                const grandTotal = subtotal + tax;
+
+                html += `
+                    <div class="pt-4 border-t border-slate-200 space-y-2 text-sm text-gray-600">
+                        <div class="flex justify-between"><span>Subtotal</span><span>₹${subtotal}</span></div>
+                        <div class="flex justify-between"><span>GST (18%)</span><span>₹${tax}</span></div>
+                        <div class="flex justify-between font-bold text-lg text-indigo-600 pt-2 border-t border-slate-100">
+                            <span>Total Payable</span><span>₹${grandTotal}</span>
+                        </div>
+                    </div>
+                `;
+
+                summaryContainer.innerHTML = html;
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        const statusMsg = document.getElementById('statusMessage');
+        const placeOrderBtn = document.getElementById('placeOrderBtn');
+
+        placeOrderBtn.disabled = true;
+        placeOrderBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing...`;
+
+        try {
+            const response = await fetch('http://localhost:8080/api/orders/place', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    shippingAddress: document.getElementById('shippingAddress').value
+                })
+            });
+
+            if (response.ok) {
+                statusMsg.className = "text-green-700 bg-green-100 p-3 rounded-lg text-center font-medium border border-green-200";
+                statusMsg.innerText = "Order placed successfully! Redirecting to orders...";
+                statusMsg.classList.remove('hidden');
+
+                setTimeout(() => {
+                    window.location.href = 'orders.html';
+                }, 1500);
+            } else {
+                statusMsg.className = "text-red-700 bg-red-100 p-3 rounded-lg text-center font-medium border border-red-200";
+                statusMsg.innerText = "Failed to place order. Please try again.";
+                statusMsg.classList.remove('hidden');
+                placeOrderBtn.disabled = false;
+                placeOrderBtn.innerHTML = `<span>Confirm & Place Order</span><i class="fa-solid fa-check"></i>`;
+            }
+        } catch (e) {
+            statusMsg.className = "text-red-700 bg-red-100 p-3 rounded-lg text-center font-medium border border-red-200";
+            statusMsg.innerText = "Server error connection failed.";
+            statusMsg.classList.remove('hidden');
+            placeOrderBtn.disabled = false;
+            placeOrderBtn.innerHTML = `<span>Confirm & Place Order</span><i class="fa-solid fa-check"></i>`;
+        }
+    });
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    }
+
+    // Initialize
+    loadCheckoutSummary();
+</script>
+</body>
+</html>
